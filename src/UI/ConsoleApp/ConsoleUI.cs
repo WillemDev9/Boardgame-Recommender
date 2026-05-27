@@ -4,18 +4,13 @@ public class ConsoleUI : IUiInputSource, IUiOutputTarget
 {
     private List<IConsoleCommand> _consoleCommandList;
     public event Action<Boardgame>? BoardgameCreated;
-    public ConsoleUI()
+    public ConsoleUI(Manager manager)
     {
         _consoleCommandList = [
-            new AddGameCommand(this),
-            new GetRecommendationCommand(this),
-            new GetCatalogCommand(this)
+            new AddGameCommand(this, manager),
+            new GetRecommendationCommand(this, manager),
+            new GetCatalogCommand(this, manager)
         ];
-    }
-
-    public void DisplayGames(List<Boardgame> boardgameList)
-    {
-        
     }
     
     public void AddNewBoardgame(Boardgame newGame)
@@ -60,6 +55,15 @@ public class ConsoleUI : IUiInputSource, IUiOutputTarget
 
             Console.WriteLine("Please select a valid number and hit Enter");
         }
+    }
+    public void DisplayGames(List<Boardgame> boardgameList) 
+    {
+        
+    }
+
+    public void DisplayMessage(string message)
+    {
+        Console.WriteLine(message);
     }
 }
 

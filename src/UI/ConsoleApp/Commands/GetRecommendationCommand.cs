@@ -1,7 +1,7 @@
 public class GetRecommendationCommand : IConsoleCommand
 {
     ConsoleUI _consoleUI;
-    public GetRecommendationCommand(ConsoleUI consoleUi)
+    public GetRecommendationCommand(ConsoleUI consoleUi, Manager manager)
     {
         _consoleUI = consoleUi;
     }

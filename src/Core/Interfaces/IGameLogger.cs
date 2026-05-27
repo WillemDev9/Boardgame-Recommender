@@ -2,7 +2,6 @@ using BoardgameRecommender.Core;
 
 public interface IGameLogger
 {
-    public void StartSession(string serialNumber);
-    public void EndSession(string serialNumber);
-    public void LogEntry(Boardgame boardgame);
+    public string SaveGame(Boardgame boardgame);
+    public List<Boardgame> GetFullGamesList();
 }
