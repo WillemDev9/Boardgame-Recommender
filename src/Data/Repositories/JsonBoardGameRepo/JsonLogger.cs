@@ -18,8 +18,12 @@ public class JsonLogger : IGameLogger
             Console.WriteLine("The folder doesn't exist, creating new folder");
             Directory.CreateDirectory(appFolder);
         }
-
         _boardgameList = GetListFromFile();
+
+        JsonSeeder seeder = new(this);
+        seeder.SeedCatalog(50);
+        
+
     }
 
     public List<Boardgame> GetFullGamesList()

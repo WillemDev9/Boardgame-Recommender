@@ -62,14 +62,14 @@ public class AddGameCommand : IConsoleCommand
             {
                 int choiceIndex = result -1;
 
-                if(choiceIndex >=0 && result < options)
+                if(choiceIndex >=0 && choiceIndex < options)
                 {
                     return (GameDurationEnum)choiceIndex;
                 }
             }
             else
             {
-                Console.WriteLine("Please enter the number of the option you'd liek to choose");
+                Console.WriteLine("Please enter the number of the option you'd like to choose");
                 Console.ReadKey();
             }
         }
@@ -114,7 +114,7 @@ public class AddGameCommand : IConsoleCommand
     {
         string titleWithUnderscores = title.Replace(' ', '_');
         
-        var cleanChars = titleWithUnderscores.Where(c => char.IsLetterOrDigit(c) || c ==' ');
+        var cleanChars = titleWithUnderscores.Where(c => char.IsLetterOrDigit(c) || c =='_');
         string gameId = string.Concat(cleanChars).ToLowerInvariant();
 
         return gameId;
