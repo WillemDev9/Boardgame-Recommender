@@ -4,7 +4,7 @@ public class ConsoleUI : IUiInputSource, IUiOutputTarget
 {
     private List<IConsoleCommand> _consoleCommandList;
     public event Action<Boardgame>? BoardgameCreated;
-    public ConsoleUI(Manager manager)
+    public ConsoleUI(BoardgameService manager)
     {
         _consoleCommandList = [
             new AddGameCommand(this, manager),

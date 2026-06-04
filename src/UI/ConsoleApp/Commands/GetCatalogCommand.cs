@@ -2,9 +2,9 @@ using BoardgameRecommender.Core;
 
 public class GetCatalogCommand : IConsoleCommand
 {
-    Manager _manager;
+    BoardgameService _manager;
     ConsoleUI _consoleUI;
-    public GetCatalogCommand(ConsoleUI consoleUI, Manager manager)
+    public GetCatalogCommand(ConsoleUI consoleUI, BoardgameService manager)
     {
         _manager = manager;
         _consoleUI = consoleUI;

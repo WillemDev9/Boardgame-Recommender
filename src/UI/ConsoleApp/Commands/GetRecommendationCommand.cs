@@ -3,8 +3,8 @@ using BoardgameRecommender.Core;
 public class GetRecommendationCommand : IConsoleCommand
 {
     ConsoleUI _consoleUI;
-    Manager _manager;
-    public GetRecommendationCommand(ConsoleUI consoleUi, Manager manager)
+    BoardgameService _manager;
+    public GetRecommendationCommand(ConsoleUI consoleUi, BoardgameService manager)
     {
         _consoleUI = consoleUi;
         _manager = manager;

@@ -1,0 +1,1 @@
+public record SaveGameResult(bool IsSuccess, string SuccessMessage);

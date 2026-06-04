@@ -1,13 +1,17 @@
 using System.Text.Json;
-using System.Threading.Channels;
 using BoardgameRecommender.Core;
+using Microsoft.Extensions.Logging;
 public class JsonLogger : IGameLogger
 {
     public readonly string _filePath;
     List<Boardgame> _boardgameList;
 
-    public JsonLogger()
+    private readonly ILogger<JsonLogger> _logger;
+
+    public JsonLogger(ILogger<JsonLogger> logger)
     {
+        _logger = logger;
+
         string _appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         string appFolder = Path.Combine(_appDataPath, "BoardgameRecommender");
 
@@ -15,13 +19,13 @@ public class JsonLogger : IGameLogger
 
         if(!Directory.Exists(appFolder))
         {
-            Console.WriteLine("The folder doesn't exist, creating new folder");
+            _logger.LogInformation("The folder doesn't exist, creating new folder at {}", appFolder);
             Directory.CreateDirectory(appFolder);
         }
         _boardgameList = GetListFromFile();
 
-        JsonSeeder seeder = new(this);
-        seeder.SeedCatalog(50);
+        // JsonSeeder seeder = new(this);
+        // seeder.SeedCatalog(50);
         
 
     }
@@ -31,25 +35,34 @@ public class JsonLogger : IGameLogger
         return _boardgameList;
     }
 
-    public string SaveGame(Boardgame boardgame)
+    public SaveGameResult SaveGame(Boardgame boardgame)
     {
         bool idExists = _boardgameList.Any(g =>g.ID.Equals(boardgame.ID, StringComparison.OrdinalIgnoreCase));
+        string resultMessage = "";
+        bool isSuccess = false;
 
         if(!idExists)
         {
             _boardgameList.Add(boardgame);
             if(SaveListToFile())
             {
-                return $"{boardgame.Title} added to the catalog";
+                resultMessage = $"{boardgame.Title} added to the catalog";
+                isSuccess = true;
             }
+            else
+            {
+                resultMessage = "An error occured while saving the file";
 
-            return "An error occured when saving gthe file"; 
+            }
 
         }
         else
         {
-            return $"{boardgame.Title} already in catalog";
+            resultMessage = $"{boardgame.Title} is already in your catalog";
+
         }
+
+        return new SaveGameResult(isSuccess, resultMessage);
 
     }
 

@@ -2,9 +2,9 @@ using BoardgameRecommender.Core;
 
 public class AddGameCommand : IConsoleCommand
 {
-    Manager _manager;
+    BoardgameService _manager;
     ConsoleUI _consoleUI;
-    public AddGameCommand(ConsoleUI consoleUI, Manager manager)
+    public AddGameCommand(ConsoleUI consoleUI, BoardgameService manager)
     {
         _consoleUI = consoleUI;
         _manager = manager;
@@ -33,7 +33,9 @@ public class AddGameCommand : IConsoleCommand
 
         Boardgame newGame = new(id, title, minPlayerCount, maxPlayerCount, gameDuration);
 
-        _manager.SaveNewGame(_consoleUI, newGame);
+        SaveGameResult result = _manager.SaveNewGame(newGame);
+        
+        Console.WriteLine(result.SuccessMessage);
     }
 
     private GameDurationEnum ReadSelection(string message, int options)
