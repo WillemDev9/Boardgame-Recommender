@@ -1,0 +1,1 @@
+public record DeleteGameResult(bool IsSuccess, string SuccessMessage);

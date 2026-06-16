@@ -2,18 +2,17 @@ using BoardgameRecommender.Core;
 
 public class AddGameCommand : IConsoleCommand
 {
-    BoardgameService _manager;
+    BoardgameService _boardgameService;
     ConsoleUI _consoleUI;
     public AddGameCommand(ConsoleUI consoleUI, BoardgameService manager)
     {
         _consoleUI = consoleUI;
-        _manager = manager;
+        _boardgameService = manager;
     }
     public string menuText => "Add new game to catalog";
 
     public void Execute()
     {
-        string id;
         string title;
         int minPlayerCount;
         int maxPlayerCount;
@@ -24,16 +23,16 @@ public class AddGameCommand : IConsoleCommand
         Console.WriteLine("---ADD NEW GAME---\n\n");
 
         title = ReadString("Enter name of game:\n");
-        id = BuildID(title);
 
         minPlayerCount = ReadInt("Enter Minimum Number of Players");
         maxPlayerCount = ReadInt("Enter Maximum number of Players", minPlayerCount);
 
         gameDuration = ReadSelection("Select the Rough Duration of the Game",Enum.GetValues<GameDurationEnum>().Length);
 
-        Boardgame newGame = new(id, title, minPlayerCount, maxPlayerCount, gameDuration);
+        Boardgame newGame = new(title, minPlayerCount, maxPlayerCount, gameDuration);
+        newGame.BuildID();
 
-        SaveGameResult result = _manager.SaveNewGame(newGame);
+        SaveGameResult result = _boardgameService.SaveNewGame(newGame);
         
         Console.WriteLine(result.SuccessMessage);
     }
@@ -112,15 +111,7 @@ public class AddGameCommand : IConsoleCommand
         }
     }
 
-    private string BuildID(string title)
-    {
-        string titleWithUnderscores = title.Replace(' ', '_');
-        
-        var cleanChars = titleWithUnderscores.Where(c => char.IsLetterOrDigit(c) || c =='_');
-        string gameId = string.Concat(cleanChars).ToLowerInvariant();
 
-        return gameId;
-    }
 
     private string ReadString(string message)
     {

@@ -16,6 +16,10 @@ public class BoardgameService
         return _gameLogger.SaveGame(boardgame);
 
     }
+    public DeleteGameResult DeleteGame(Boardgame boardgame)
+    {
+        return _gameLogger.DeleteGame(boardgame);
+    }
     public List<Boardgame> GetFullGameList() => _gameLogger.GetFullGamesList();
 
 }

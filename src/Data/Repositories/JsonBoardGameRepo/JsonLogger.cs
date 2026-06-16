@@ -65,6 +65,30 @@ public class JsonLogger : IGameLogger
         return new SaveGameResult(isSuccess, resultMessage);
 
     }
+    public DeleteGameResult DeleteGame(Boardgame boardgame)
+    {
+        string resultMessage = "";
+        bool isSuccess = false;
+
+        var itemToRemove = _boardgameList.FirstOrDefault(g => g.ID == boardgame.ID);
+
+        if(itemToRemove != null)
+        {
+            _boardgameList.Remove(itemToRemove);
+        }
+
+        if(SaveListToFile())
+        {
+            resultMessage = $"{boardgame.Title} removed from teh catalog";
+            isSuccess = true;
+        }
+        else
+        {
+            resultMessage = "An error occured while updating the file";
+        }
+
+        return new DeleteGameResult(isSuccess, resultMessage);
+    }
 
     private List<Boardgame> GetListFromFile()
     {
@@ -96,4 +120,6 @@ public class JsonLogger : IGameLogger
         }
 
     }
+
+
 }

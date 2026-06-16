@@ -39,7 +39,8 @@ public class JsonSeeder
             int maxPlayers = GenerateMaxPlayers(minPlayers);
             GameDurationEnum duration = SelectGameDuration();
 
-            Boardgame newGame = new(gameID, gameName, minPlayers, maxPlayers, duration);
+            Boardgame newGame = new(gameName, minPlayers, maxPlayers, duration);
+            newGame.BuildID();
             _logger.SaveGame(newGame);
         }
 

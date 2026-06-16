@@ -7,9 +7,9 @@
 <h1>Manually Add a Game to Collection</h1>
 
 <label>Game Title:</label>
-<input class="form-control" type="text" value="@searchQuery" @oninput="OnSearchTextChanged" placeholder="Type Game Name" />
+<input class="form-control" type="text" value="@searchQuery" @oninput="OnSearchTextChanged" @onblur="HideDropdown" placeholder="Type Game Name" />
 
-@if (searchResults.Any())
+@if (showDropdown && searchResults.Any())
 {
     <ul class="dropdown-menu show" style="position: absolute; width: 100%; z-index:1000; max-height: 200px; overflow-y: auto;">
         @foreach (var game in searchResults)
@@ -49,6 +49,7 @@
 
 @code
 {
+    private bool showDropdown = true;
     string searchQuery = "";
     List<Boardgame> searchResults = new();
     string title = string.Empty;
@@ -81,6 +82,7 @@
     {
         searchQuery = e.Value?.ToString() ?? "";
         searchResults = BggCsvParser.SearchGameList(searchQuery);
+        showDropdown = true;
     }
     private void SelectGame(Boardgame game)
     {
@@ -90,5 +92,14 @@
         minPlayerCount = game.MinPlayerCount;
         maxPlayerCount = game.MaxPlayerCount;
         duration = game.GameDuration;
+
+        showDropdown = false;
+    }
+    private void HideDropdown()
+    {
+        Task.Delay(200).ContinueWith(_=> {
+            showDropdown = false;
+            InvokeAsync(StateHasChanged);
+        });
     }
 }
