@@ -1,7 +1,41 @@
 ﻿@page "/"
+@rendermode InteractiveServer
+@inject BoardgameService BoardgameService
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Full Games List</h1>
 
-Welcome to your new app.
+@if (fullGamesList == null)
+{
+    <p><em>Loading Games List...</em></p>
+}
+else if (!fullGamesList.Any())
+{
+    <p>Your catalog is empty! Got to the 'Add' page to add your first game.</p>
+}
+else
+{
+    <GameTable Games="fullGamesList" OnDeleteClicked="DeleteGame" />
+}
+
+@code
+{
+    List<Boardgame>? fullGamesList;
+
+    public void DeleteGame(Boardgame boardgame)
+    {
+        BoardgameService.DeleteGame(boardgame);
+        RefreshCatalog();
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        RefreshCatalog();
+    }
+    private void RefreshCatalog()
+    {
+        fullGamesList = BoardgameService.GetFullGameList();
+    }
+}

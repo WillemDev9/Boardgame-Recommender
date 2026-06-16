@@ -10,6 +10,8 @@ builder.Services.AddScoped<IGameLogger, JsonLogger>();
 
 builder.Services.AddScoped<BoardgameService>();
 
+builder.Services.AddSingleton<BggCsvParser>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

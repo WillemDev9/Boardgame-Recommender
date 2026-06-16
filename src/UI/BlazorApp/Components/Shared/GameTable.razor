@@ -1,0 +1,36 @@
+
+@using BoardgameRecommender.Core
+
+<table class="table table-striped table-hover mt-4">
+    <tr>
+        <th>Game Title</th>
+        <th>Player Count</th>
+        <th>Game Duration</th>
+        <th>Delete</th>
+    </tr>
+    @foreach(Boardgame game in Games)
+    {
+        <tr>
+            <td>
+                @game.Title 
+            </td>
+            <td>
+                @game.MinPlayerCount - @game.MaxPlayerCount
+            </td>
+            <td>
+                @game.GameDuration
+            </td>
+            <td>
+                <button class="btn btn-secondary" @onclick="() => OnDeleteClicked.InvokeAsync(game)">X</button>
+            </td>
+        </tr>
+    }
+</table>
+
+@code
+{
+    [Parameter]
+    public List<Boardgame> Games {get;set;} = new();
+    [Parameter]
+    public EventCallback<Boardgame> OnDeleteClicked {get; set;}
+}

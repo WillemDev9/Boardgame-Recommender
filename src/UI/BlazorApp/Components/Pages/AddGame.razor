@@ -1,0 +1,94 @@
+@page "/addgame"
+@rendermode InteractiveServer
+
+@inject BoardgameService BoardgameService
+@inject BggCsvParser BggCsvParser
+
+<h1>Manually Add a Game to Collection</h1>
+
+<label>Game Title:</label>
+<input class="form-control" type="text" value="@searchQuery" @oninput="OnSearchTextChanged" placeholder="Type Game Name" />
+
+@if (searchResults.Any())
+{
+    <ul class="dropdown-menu show" style="position: absolute; width: 100%; z-index:1000; max-height: 200px; overflow-y: auto;">
+        @foreach (var game in searchResults)
+        {
+            <li>
+                <button class="dropdown-item" type="button" @onclick="()=> SelectGame(game)">
+                    @game.Title
+                </button>
+            </li>
+        }
+    </ul>
+}
+
+<br />
+
+<label>Minimum Number of Players:</label>
+<input class="form-control/" type="number" @bind="minPlayerCount">
+<br />
+
+<label>Maximum Number of Players:</label>
+<input class="form-control/" type="number" @bind="maxPlayerCount">
+<br />
+
+<label>Game Duration:</label>
+<select class="form-control" @bind="duration">
+    <option value="@GameDurationEnum.Short">Short</option>
+    <option value="@GameDurationEnum.Medium">Medium</option>
+    <option value="@GameDurationEnum.Long">Long</option>
+    <option value="@GameDurationEnum.SuperLong">Super Long</option>
+</select>
+<br />
+
+<button class="btn btn-primary" @onclick="AddNewGame">Add New Game</button>
+<br />
+
+<p>@message</p>
+
+@code
+{
+    string searchQuery = "";
+    List<Boardgame> searchResults = new();
+    string title = string.Empty;
+    int minPlayerCount;
+    int maxPlayerCount;
+    GameDurationEnum duration;
+    string message = "Success Message Goes Here";
+    
+
+    private void AddNewGame()
+    {
+        if(string.IsNullOrWhiteSpace(title))
+        {
+            title = searchQuery;
+        }
+
+        Boardgame newGame = new(title, minPlayerCount, maxPlayerCount, duration);
+        newGame.BuildID();
+
+        SaveGameResult result = BoardgameService.SaveNewGame(newGame);
+
+        message = result.SuccessMessage;
+
+        title = string.Empty;
+        searchQuery = "";
+        minPlayerCount = 0;
+        maxPlayerCount = 0;
+    }
+    private void OnSearchTextChanged(ChangeEventArgs e)
+    {
+        searchQuery = e.Value?.ToString() ?? "";
+        searchResults = BggCsvParser.SearchGameList(searchQuery);
+    }
+    private void SelectGame(Boardgame game)
+    {
+        searchResults.Clear();
+        searchQuery = game.Title;
+        title = game.Title;
+        minPlayerCount = game.MinPlayerCount;
+        maxPlayerCount = game.MaxPlayerCount;
+        duration = game.GameDuration;
+    }
+}

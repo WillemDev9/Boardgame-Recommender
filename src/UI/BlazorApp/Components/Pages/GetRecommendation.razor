@@ -1,0 +1,54 @@
+@page "/recommend"
+@rendermode InteractiveServer
+
+@inject BoardgameService BoardgameService
+
+<h1>Get Game Recommendations</h1>
+
+<label>Players:</label>
+<input class="form-control" type="number" @bind="playerCount"/>
+
+<label>Game Duration:</label>
+<select class="form-control" @bind="duration">
+    <option value="@GameDurationEnum.Short">Short</option>
+    <option value="@GameDurationEnum.Medium">Medium</option>
+    <option value="@GameDurationEnum.Long">Long</option>
+    <option value="@GameDurationEnum.SuperLong">Super Long</option>
+
+</select>
+
+<button class="btn btn-primary" @onclick="GenerateGameRecommendations">Get Recommendations</button>
+
+<p> Player Count Selected: @playerCount</p>
+<p> Game Duration Selected: @duration</p>
+
+<GameTable Games = "recommendedList"/>
+
+@code
+{
+    List<Boardgame> recommendedList = new();
+
+    int playerCount;
+    GameDurationEnum duration;
+
+    private void GenerateGameRecommendations()
+    {
+        List<Boardgame> fullGamesList = BoardgameService.GetFullGameList();
+
+        recommendedList = fullGamesList
+            .Where(game => playerCount >= game.MinPlayerCount &&
+                                    playerCount <= game.MaxPlayerCount &&
+                                    game.GameDuration == duration)
+            .OrderBy(_=> Random.Shared.Next())
+            .Take(5)
+            .ToList();
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        playerCount = 2;
+        duration = GameDurationEnum.Medium;
+        GenerateGameRecommendations();
+    }
+}
